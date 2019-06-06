@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-radosgw
+  namespace: ceph
+spec:
+  selector:
+    app: ceph-radosgw
+  ports:
+  - protocol: TCP
+    port: 7480
+    targetPort: 7480

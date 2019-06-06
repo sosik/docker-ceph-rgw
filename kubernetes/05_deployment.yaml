@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ceph-radosgw
+  namespace: ceph
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: ceph-radosgw
+  template:
+    metadata:
+      labels:
+        app: ceph-radosgw
+    spec:
+      containers:
+        - name: ceph-radosgw
+          image: sosicek/docker-ceph-rgw:latest
+          env:
+            - name: CEPH_MONS
+              value: n1.llc.mbry.click
+            - name: CEPH_RADOSGW_ID
+              value: radosgw
+          ports:
+            - name: http
+              containerPort: 7480
+          volumeMounts:
+            - name: keyring
+              mountPath: /etc/ceph
+              readOnly: true
+      volumes:
+        - name: keyring
+          secret:
+            secretName: ceph-radosgw-keyring
+            items:
+              - key: keyring
+                path: keyring
